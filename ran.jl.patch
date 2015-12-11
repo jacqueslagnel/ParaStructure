@@ -1,0 +1,47 @@
+--- structure_kernel_src/ran.h	2012-07-13 16:02:40.000000000 +0300
++++ structure_kernel_src_seed_jac/ran.h	2013-04-24 19:31:42.599445153 +0300
+@@ -1,4 +1,4 @@
+-extern void Randomize(int RANDOMIZE, int *seed);  
++extern void Randomize(int RANDOMIZE, unsigned int *seed);  
+ extern double RandomReal(double low, double high);
+ extern int RandomInteger(int low, int high);
+ extern double rnd();
+--- structure_kernel_src/ran.c	2012-07-13 16:02:40.000000000 +0300
++++ structure_kernel_src_seed_jac/ran.c	2013-07-25 20:31:33.386240448 +0300
+@@ -94,6 +94,9 @@
+ #include <stdlib.h>
+ #include <math.h>
+ #include <time.h>
++#include <sys/time.h>
++#include <unistd.h>
++#include <sys/types.h>
+ 
+ #define ABS(x) ((x) >= 0 ? (x) : -(x))
+ #define min(a,b) ((a) <= (b) ? (a) : (b))
+@@ -108,17 +111,21 @@
+ /*==============================================*/
+ 
+ /* Random number functions (from random.c by Eric Roberts) */
+-
+ /*Melissa modified in 1/08 so that it either calls srand with given seed or generates one*/
+-void Randomize(int RANDOMIZE, int *seed)
++/*Jacques Lagnel modified in 1/13 in order to generate based on micro seconds*/
++void Randomize(int RANDOMIZE, unsigned int *seed)
+ /* Seed the random number generator */
+ {   
+   FILE *outfile;
+-  if (RANDOMIZE) 
+-    *seed = (int)time(NULL);
++	struct timeval time1;
++	if (RANDOMIZE){ 
++		gettimeofday(&time1,NULL);
++  		*seed=(((unsigned int)(time1.tv_sec) + (unsigned int)(time1.tv_usec)+(unsigned int)getpid())-(unsigned int)(time1.tv_sec));
++  	}
+   srand(*seed);
+   outfile = fopen("seed.txt", "a");
+-  fprintf(outfile, "%i\n", *seed);
++  fprintf(outfile, "%d\n", *seed);
++  //fprintf(outfile, "%d, %d, %d, %d\n", *seed,(unsigned int)time1.tv_sec,(unsigned int)time1.tv_usec, (unsigned int)getpid());
+   fclose(outfile);
+   /*  srand((int) time(NULL) );  */
+ }
