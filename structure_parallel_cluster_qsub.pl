@@ -8,11 +8,12 @@ $|++;#IMPORTANT: in order to use print with nohup. Flush the stdout
 use Time::HiRes qw[gettimeofday tv_interval];
 use Scalar::Util qw(looks_like_number);
 
-#--------------- !!! MUST be adapted to the system and should be accessible by all the nodes --------
+#--------------- MUST be adapted to the system and should be view by all nodes --------
 my $struture_path="/usr/local/bin/structure";
+#my $struture_path="/usr/local/bin/structure_2.3.2.1";
 my $structure_parse_results_path="/usr/local/bin/structure_parse_results.pl";
 my $structure2distruct_path="/usr/local/bin/structure2distruct.pl";
-#----------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 #################### pass args #################################
 if (($#ARGV+1) != 5 ) {
@@ -109,7 +110,6 @@ for($k=$max_k;$k>=$min_k;$k--){
 	for($iter=1;$iter<=$max_iter;$iter++){
 		$job_name= sprintf("struct_%02d_%02d",$k,$iter);
 		if($save_full_output==1){$redir="/tmp/${datetime}_${random_number}_Out_${job_name}";}
-##### seed generator if in the extraparams the "#define RANDOMIZE 1" is not set #####################
 		$seed=int(rand(10000000))+10000000;
 			$qsub="#!/bin/bash
 #PBS -l walltime=48:00:00
@@ -121,10 +121,7 @@ for($k=$max_k;$k>=$min_k;$k--){
 
 ${datestr}
 
-#extraparams the #define RANDOMIZE 1 is NOT set
 #$struture_path -D ${seed} -m $file_mainparams -e $file_extraparams -i $file_project_data -K $k -o ${struct_out_path}/$job_name > $redir
-
-# if extraparams the #define RANDOMIZE 1 is set: needs the patched version of structure binary
 $struture_path -m $file_mainparams -e $file_extraparams -i $file_project_data -K $k -o ${struct_out_path}/$job_name > $redir
 
 ${datestr}
