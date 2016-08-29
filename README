@@ -8,10 +8,10 @@ parastructure
 Description
 ------------
 parastructure run the population genetics software STRUCTURE from Pritchard et al. 2000 (http://pritch.bsd.uchicago.edu/structure.html) in parallel on a cluster (beowulf type) with a PBS queue system (torque: http://www.adaptivecomputing.com/products/open-source/torque/). Each run of K (the number of populations) is executed separately on each CPU of the cluster trough PBS jobs.
-
 A summary statistics table and distruct (Noah Rosenberg: http://www.stanford.edu/group/rosenberglab/distruct.html) outputs are built at the end.
-
 Run Structure in parallel: nb jobs=k*iterations (on a cluster with queuing system (qsub))
+
+parastructure conducts the following steps:
 1) Run structure
 2) Build statistics csv file
 3) Run distruct and produce ps grahics
